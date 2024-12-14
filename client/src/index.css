@@ -1,0 +1,22 @@
+* {
+	box-sizing: border-box;
+}
+
+html {
+	font-family: "Geist", sans-serif;
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 100%;
+	margin: 1em;
+}
+
+main {
+	width: 100%;
+    border-radius: 0.75em;
+}
