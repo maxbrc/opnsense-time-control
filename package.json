@@ -1,0 +1,45 @@
+{
+  "name": "opnsense-time-control",
+  "version": "1.0.0",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "webpack --watch --config webpack.dev.js & tsc-watch -p server/tsconfig.json --onSuccess \"node server/dist/index.js\"",
+    "build": "webpack --config webpack.prod.js && tsc -p server/tsconfig.json"
+  },
+  "type": "module",
+  "private": "true",
+  "author": "Max Bruch",
+  "license": "MIT",
+  "description": "A sleek and simple web interface for controlling internet access for OPNsense.",
+  "dependencies": {
+    "dotenv-safe": "^9.1.0",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.0",
+    "node-schedule": "^2.1.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@types/dotenv-safe": "^8.1.6",
+    "@types/express": "^5.0.0",
+    "@types/mongoose": "^5.11.96",
+    "@types/node": "^22.10.1",
+    "@types/node-schedule": "^2.1.7",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/uuid": "^10.0.0",
+    "@types/webpack": "^5.28.5",
+    "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^7.1.2",
+    "html-webpack-plugin": "^5.6.3",
+    "nodemon": "^3.1.9",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.1",
+    "tsc-watch": "^6.2.1",
+    "typescript": "^5.7.2",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-merge": "^6.0.1"
+  }
+}

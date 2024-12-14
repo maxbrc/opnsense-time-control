@@ -17,7 +17,15 @@ For security reason, I recommend that you create a dedicated user for this speci
 4. Create a new API key
 5. The downloaded file contains everything you need to progress further.
 6. Don't forget to **Save and go back**.
+
+### Using Docker (recommended)
+Coming soon...
 ### Using systemd
+#### Requirements
+- Locate your node executable by using `which node`
+- From OPNsense, grab the API key, it's secret and the UUID of the correct rule
+- A running MongoDB instance. Take a look at https://www.mongodb.com/docs/manual/installation/. Follow through the entire guide for your operating system and make sure `mongod` is running.
+#### Procedure
 1. Pull the latest stable release
 2. Create a systemd service
   1. Create `opnsense-time-control.service` at `/etc/systemd/system/`
@@ -27,7 +35,7 @@ For security reason, I recommend that you create a dedicated user for this speci
 After=network.service
 
 [Service]
-ExecStart=/root/.nvm/versions/node/v22.9.0/bin/node /path/to/the/release>
+ExecStart=/path/to/node/executable /path/to/the/release>
 Type=simple
 Restart=on-failure
 
@@ -35,14 +43,12 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
   3. Make sure to adjust the path of the Node executable and the location of the release files.
-3. If you want to run the web interface on a different port than 80, you currently have to compile from source.
-4. Enter you API credentials in the .env file.
+3. Enter you API credentials and the rule's UUID in the .env file. You can also change the port of the webserver there.
 4. `systemctl daemon-reload && systemctl enable opnsense-time-control && systemctl start opnsense-time-control`
-5. Check the service log files and enjoy!
-### Using Docker
-This is not yet available but I will do it soon!
+5. Check the service log files, by doing `service opnsense-time-control status`. If no errors appear and the service is running, you're finished!
 
-## Working with the source code
+
+## Working with / compiling source code
 ### Requirements
 - Node and NPM
 ### How To
@@ -51,3 +57,9 @@ This is not yet available but I will do it soon!
 3. `npm install`
 4. When finished editing, do `npm run build`
 5. `node server/index.js`
+
+## Features in work
+- Typing of API requests to OPNsense
+- Ability to select weekdays for schedules
+- Authentication system
+- Implement a way to trust OPNsense's certificate
