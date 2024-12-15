@@ -9,7 +9,6 @@ import "../styles/Schedule.css";
 function Schedule({ dbSchedule, removeSchedule, putSchedule }: { dbSchedule: ruleSchedule, removeSchedule: () => void, putSchedule: (newSchedule: ruleSchedule) => void }) {
     const [ schedule, setSchedule ] = useState(dbSchedule)
 
-
     const setScheduleTime = (time: string, value: string) => {
         setSchedule(currSchedule => {
             return {

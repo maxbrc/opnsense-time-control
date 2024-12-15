@@ -6,6 +6,10 @@ config({
     path: path.join(__dirname,"../../.env"),
     example: path.join(__dirname,"../../.env.example")
 });
+config({
+    path: path.join(__dirname,"../../.env.common"),
+    example: path.join(__dirname,"../../.env.common.example")
+});
 const credentials = Buffer.from(process.env.KEY + ":" + process.env.SECRET).toString("base64");
 const ruleUUID = process.env.RULEUUID;
 

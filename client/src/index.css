@@ -27,3 +27,18 @@ main {
 	width: 100%;
     border-radius: 0.75em;
 }
+
+@media (min-width: 500px) {
+	body {
+		justify-content: center;
+		margin: 0;
+		min-height: 100%;
+	}
+	main {
+		width: 30em;
+		border: 1px solid lightgrey;
+		border-radius: 0.5em;
+		padding: 1em;
+		margin: 2em 0;
+	}
+}

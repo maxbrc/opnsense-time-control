@@ -1,10 +1,14 @@
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import DotenvWebpackPlugin from "dotenv-webpack";
 
 const config = {
     entry: "./client/src/index.tsx",
     plugins: [
         new HtmlWebpackPlugin({
             template: "./client/src/index.html"
+        }),
+        new DotenvWebpackPlugin({
+            path: "./.env.common"
         })
     ],
     module: {

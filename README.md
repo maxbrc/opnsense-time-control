@@ -68,9 +68,10 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
   3. Make sure to adjust the path of the Node executable and the location of the release files.
-3. Enter you API credentials and the rule's UUID in the .env file. You can also change the port of the webserver there.
+3. Enter you API credentials and the rule's UUID in the .env file.
 4. `systemctl daemon-reload && systemctl enable opnsense-time-control && systemctl start opnsense-time-control`
 5. Check the service log files, by doing `service opnsense-time-control status`. If no errors appear and the service is running, you're finished!
+6. Point a reverse proxy like nginx or Traefik to http://localhost:3000/
 
 
 ## Working with / compiling source code
@@ -83,8 +84,7 @@ WantedBy=multi-user.target
 4. To run the dev server, do `npm run dev`. This will cause both wepback to watch the frontend and tsc to watch the backend code simultaneously. The only thing you need to do is to refresh the page.
 5. When finished editing, do `npm run build`
 6. `node server/index.js`
-7. By default, go to `http://localhost:3000/`
-
+7. Go to `http://localhost:3000/`
 ## Features in work
 - **High Priority:** Availabilty of a dockerized version
 - **High Priority:** Script for finding the rule uuid automatically
@@ -95,7 +95,8 @@ WantedBy=multi-user.target
 - Create a better error reporting system
 - A configurable log system (debug, info, off)
 - A timer option for turning internet back on/off in x time
-## Planned features
+- Ability to select port
+## Larger, planned features
 - A ticket system to allow restricted users to gain extra time
 - Somehow implement a system to track total internet usage time and limit that in connection with the absolute time based restriction
 ## When can I expect these features?

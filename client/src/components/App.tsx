@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { v4 as uuid } from "uuid";
+
 import "../styles/App.css";
+
 import StatusBar from "./StatusBar";
 import Selector from "./Selector";
 import Schedules from "./Schedules";
 import { StatusResponse, ruleSchedule } from "../types";
+
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 function App() {
-
     const blankSchedule: ruleSchedule = {
         start: "00:00",
         end: "00:00",
@@ -22,18 +25,19 @@ function App() {
     const [ isLoading, setIsLoading ] = useState(true);
 
     const addSchedule = async () => {
-        await putSchedule(blankSchedule);
+        const newSchedule = {...blankSchedule, uuid: uuid()};
+        await putSchedule(newSchedule);
         setStatus(currStatus => {
             return {
                 ...currStatus,
-                schedules: [...currStatus.schedules, blankSchedule]
+                schedules: [...currStatus.schedules, newSchedule]
             }
         })
     }
 
     const putSchedule = async (newSchedule: ruleSchedule) => {
         try {
-            const res = await fetch("http://localhost:3000/schedules", {
+            const res = await fetch(`http://localhost:${process.env.PORT}/schedules`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -49,7 +53,7 @@ function App() {
     const removeSchedule = (scheduleIndex: number): void => {
         const scheduleUUID = status.schedules[scheduleIndex].uuid;
         if (scheduleUUID) {
-            fetch(`http://localhost:3000/schedules/${scheduleUUID}`, {
+            fetch(`http://localhost:${process.env.PORT}/schedules/${scheduleUUID}`, {
                 method: "POST",
                 headers: {
                     Accept: "application/json"
@@ -66,7 +70,7 @@ function App() {
 
     async function fetchStatus() {
         try {
-            const res = await fetch("http://localhost:3000/status", {
+            const res = await fetch(`http://localhost:${process.env.PORT}/status`, {
                 headers: { "Accept": "application/json" }
             });
             const json = await res.json();

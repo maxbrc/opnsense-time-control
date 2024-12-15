@@ -1,4 +1,3 @@
-import { v4 as uuid } from "uuid";
 import schedule from "node-schedule";
 import { Schedule } from "./schema.js";
 import { extractScheduleTime } from "./utils.js";
@@ -112,12 +111,7 @@ const putSchedule = async (requestBody: ruleSchedule) => {
     newSchedule.end.hour = extractScheduleTime(end, "hour");
     newSchedule.end.minute = extractScheduleTime(end, "minute");
     try {
-        if (!newSchedule.uuid) {
-            newSchedule.uuid = uuid();
-            await Schedule.create(newSchedule);
-        } else {
-            await Schedule.updateOne({ uuid: newSchedule.uuid }, newSchedule);
-        }
+        await Schedule.updateOne({ uuid: newSchedule.uuid }, newSchedule, { upsert: true });
         await refreshScheduleJob(newSchedule.uuid);
     } catch (e) {
         console.log(e);
