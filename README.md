@@ -53,21 +53,21 @@ Coming soon...
 #### Procedure
 1. Pull the latest stable release
 2. Create a systemd service
-  1. Create `opnsense-time-control.service` at `/etc/systemd/system/`
-  2. Paste the following content
+  - Create `opnsense-time-control.service` at `/etc/systemd/system/`
+  - Paste the following content
 ```
 [Unit]
 After=network.service
 
 [Service]
-ExecStart=/path/to/node/executable /path/to/the/release>
+ExecStart=/path/to/node/executable /path/to/the/release/server/dist/index.js>
 Type=simple
 Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
 ```
-  3. Make sure to adjust the path of the Node executable and the location of the release files.
+  - Make sure to adjust the path of the Node executable and the location of the release files (must end in server/dist/index.js).
 3. Move .env.example and .env.common.example to .env and .env.common
 4. Enter you API credentials and the rule's UUID in the .env file. Change the port if you'd like in .env.common.
 5. `systemctl daemon-reload && systemctl enable opnsense-time-control && systemctl start opnsense-time-control`
