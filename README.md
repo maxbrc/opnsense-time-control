@@ -68,10 +68,11 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
   3. Make sure to adjust the path of the Node executable and the location of the release files.
-3. Enter you API credentials and the rule's UUID in the .env file.
-4. `systemctl daemon-reload && systemctl enable opnsense-time-control && systemctl start opnsense-time-control`
-5. Check the service log files, by doing `service opnsense-time-control status`. If no errors appear and the service is running, you're finished!
-6. Point a reverse proxy like nginx or Traefik to http://localhost:3000/
+3. Move .env.example and .env.common.example to .env and .env.common
+4. Enter you API credentials and the rule's UUID in the .env file. Change the port if you'd like in .env.common.
+5. `systemctl daemon-reload && systemctl enable opnsense-time-control && systemctl start opnsense-time-control`
+6. Check the service log files, by doing `service opnsense-time-control status`. If no errors appear and the service is running, you're finished!
+7. Point a reverse proxy like nginx or Traefik to http://localhost:3000/
 
 
 ## Working with / compiling source code
