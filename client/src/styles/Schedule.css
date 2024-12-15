@@ -1,0 +1,22 @@
+.timeField {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+
+.schedules {
+    border: 1px solid grey;
+    border-radius: 0.5em;
+    padding: 1em;
+    margin: 0 0 1em 0;
+}
+
+.buttonField {
+    display: flex;
+    flex-direction: column;
+}
+
+.buttonField > * {
+    flex-grow: 1;
+}

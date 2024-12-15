@@ -38,6 +38,10 @@ const scheduleSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
+    },
+    dow: {
+        type: [Number],
+        required: true
     }
 });
 

@@ -7,25 +7,28 @@ import Button from '@mui/material/Button';
 import SettingsIcon from '@mui/icons-material/Settings';
 import "../styles/Selector.css";
 
-const setAccessState = async (state: string) => {
-    try {
-        const res = await fetch(`http://localhost:3000/status/${state}`, {
-            method: "POST",
-            headers: { Accept: "application/json" }
-        })
-        //const json = await res.json() // TO BE HANDLED
-    } catch (e) {
-        console.log("Error while setting access!", (e as Error).message)
-    }
-}
-
-function Selector({ accessStatus, onStateChange }: { accessStatus: boolean, onStateChange: () => {} }) {
+function Selector({ accessStatus, onStateChange }: { accessStatus: boolean, onStateChange: () => void }) {
     
+    const setAccessState = async (state: string) => {
+        if (accessStatus.toString() !== state) {
+            try {
+                const res = await fetch(`http://localhost:3000/status/${state}`, {
+                    method: "POST",
+                    headers: { Accept: "application/json" }
+                })
+                //const json = await res.json() // TO BE HANDLED
+                onStateChange()
+            } catch (e) {
+                console.log("Error while setting access!", (e as Error).message)
+            }
+        }
+    }
+
     const [ access, setAccess ] = useState(accessStatus.toString());
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         console.log("State Change To:"+access)
         setAccess(event.target.value);
-        setAccessState(event.target.value);
+        
     }
     
     return (
@@ -44,7 +47,7 @@ function Selector({ accessStatus, onStateChange }: { accessStatus: boolean, onSt
                 </FormControl>
             </div>
             <div className="buttonWrapper">
-                <Button onClick={() => {onStateChange()}} variant="outlined" startIcon={<SettingsIcon />} sx={{color: "black", borderColor: "black"}}>Set Access</Button>
+                <Button onClick={() => {setAccessState(access);}} variant="outlined" startIcon={<SettingsIcon />} sx={{color: "black", borderColor: "black"}}>Set Access</Button>
             </div>
         </>
     )

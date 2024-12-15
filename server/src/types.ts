@@ -12,11 +12,12 @@ export interface ruleScheduleModel {
     start: {
         hour: string;
         minute: string;
-    },
+    };
     end: {
         hour: string;
         minute: string;
-    },
+    };
     name: string;
+    dow: Number[];
 }
 // I do not yet know how I can connect this to the Mongo Schema (ignore in)

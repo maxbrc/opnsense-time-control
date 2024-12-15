@@ -1,4 +1,4 @@
-interface ruleSchedule {
+export interface ruleSchedule {
     start: string,
     end: string,
     uuid: string,

@@ -1,0 +1,19 @@
+.timePicker * {
+    display: block;
+}
+
+.timePicker label {
+    font-weight: 500;
+    margin: 0 0 0.5em 0;
+}
+
+.timePicker {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+input[type=time] {
+    padding: 0.5rem;
+    font-size: 1.2em;
+}

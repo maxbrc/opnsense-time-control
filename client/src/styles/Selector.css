@@ -1,8 +1,0 @@
-.buttonWrapper {
-    margin: 1em 0 0 0;
-    display: flex;
-}
-
-.buttonWrapper > * {
-    flex-grow: 1;
-}

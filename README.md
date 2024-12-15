@@ -4,6 +4,7 @@ This small application enables you control the internet access of all devices on
 - Master internet switch
 - Unlimited schedules
 - Robust error handling
+
 [![NodeJS](https://img.shields.io/badge/Node.js-6DA55F?logo=node.js&logoColor=white)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)](#)
 [![React](https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB)](#)
@@ -93,3 +94,10 @@ WantedBy=multi-user.target
 - Implement a way to trust OPNsense's certificate
 - Create a better error reporting system
 - A configurable log system (debug, info, off)
+- A timer option for turning internet back on/off in x time
+## Planned features
+- A ticket system to allow restricted users to gain extra time
+- Somehow implement a system to track total internet usage time and limit that in connection with the absolute time based restriction
+## When can I expect these features?
+This is my first open source project and I am very passionate about it. Hence I will pour all my energy into it.
+This means you can expect features in work within the next month or two, meaning February 2025. Planned features may in rare cases be discarded because they're not possible or I don't posess the necessary skills yet (collaboration on this project is welcome!).
