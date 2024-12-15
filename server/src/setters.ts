@@ -125,4 +125,8 @@ const putSchedule = async (requestBody: ruleSchedule) => {
     }
 }
 
-export { refreshScheduleJob, accessToggle, putSchedule };
+const deleteSchedule = async (scheduleUUID: string) => {
+    await Schedule.deleteOne({uuid: scheduleUUID});
+}
+
+export { refreshScheduleJob, accessToggle, putSchedule, deleteSchedule };

@@ -4,25 +4,18 @@ import Schedule from "./Schedule";
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 
-function Schedules({ schedulesArray, addSchedule, removeSchedule }: { schedulesArray: ruleSchedule[], addSchedule: (blankSchedule: ruleSchedule) => void, removeSchedule: (index: number) => void}) {
-
-    const blankSchedule: ruleSchedule = {
-        start: "00:00",
-        end: "00:00",
-        uuid: "",
-        enabled: true,
-        name: "Schedule Name"
-    }
+function Schedules({ schedulesArray, addSchedule, removeSchedule, putSchedule }: { schedulesArray: ruleSchedule[], addSchedule: () => Promise<void>, removeSchedule: (index: number) => void, putSchedule: (newSchedule: ruleSchedule) => void}) {
 
     return (
         <>
             {
                 schedulesArray.map((el, idx) => {
-                    return <Schedule dbSchedule={el} key={idx} removeSchedule={() => removeSchedule(idx)}/>
+                    const uniqueKey = el.start + el.end // This is admittedly terrible but it fixes the bug (will fix later)
+                    return <Schedule dbSchedule={el} key={uniqueKey} removeSchedule={() => removeSchedule(idx)} putSchedule={putSchedule}/>
                 })
             }
             <div className="buttonWrapper">
-                <Button onClick={() => addSchedule(blankSchedule)} startIcon={<AddIcon />} variant="outlined" sx={{color: "black", borderColor: "black"}}>Add Schedule</Button>
+                <Button onClick={addSchedule} startIcon={<AddIcon />} variant="outlined" sx={{color: "black", borderColor: "black"}}>Add Schedule</Button>
             </div>
         </>
     )

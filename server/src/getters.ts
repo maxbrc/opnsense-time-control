@@ -72,7 +72,7 @@ const assembleStatusResponse = async (): Promise<StatusResponse> => {
         const accessStatus = await accessInfo();
         response.status.access = accessStatus;
 
-        const emptySchedule = {
+        const emptySchedule: ruleSchedule = {
             start: "",
             end: "",
             uuid: "",
@@ -82,7 +82,7 @@ const assembleStatusResponse = async (): Promise<StatusResponse> => {
         const storedSchedules = await Schedule.find({})
         for (let i = 0; i < storedSchedules.length; i++) {
             const schedule = storedSchedules[i];
-            response.schedules[i] = emptySchedule;
+            response.schedules[i] = {...emptySchedule};
             response.schedules[i].start = assembleScheduleTime(schedule.start.hour, schedule.start.minute);
             response.schedules[i].end = assembleScheduleTime(schedule.end.hour, schedule.end.minute);
             response.schedules[i].enabled = schedule.enabled;

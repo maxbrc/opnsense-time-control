@@ -26,9 +26,7 @@ function Selector({ accessStatus, onStateChange }: { accessStatus: boolean, onSt
 
     const [ access, setAccess ] = useState(accessStatus.toString());
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("State Change To:"+access)
         setAccess(event.target.value);
-        
     }
     
     return (

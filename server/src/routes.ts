@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 
 import { validateScheduleData } from "./utils.js";
 import { assembleStatusResponse } from "./getters.js";
-import { accessToggle, putSchedule } from "./setters.js";
+import { accessToggle, putSchedule, deleteSchedule } from "./setters.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url)); // ES6 Module __dirname workaround
 
@@ -40,11 +40,28 @@ app.post("/status/:state", async (req, res) => {
 app.post("/schedules", async (req, res) => {
     console.log("Received Schedule POST Request:");
     console.dir(req.body);
-    if (validateScheduleData(req.body)) {
-        putSchedule(req.body);
+    try {
+        if (validateScheduleData(req.body)) {
+            await putSchedule(req.body);
+            res.json({ status: "ok", message: "" });
+        } else {
+            throw new Error("Invalid schedule data." );
+        }
+    } catch (e) {
+        res.json({ status: "error", message: (e as Error).message })
+    }
+})
+
+// === (DELETE) Routes === //
+
+app.post("/schedules/:uuid", async (req, res) => {
+    const { uuid } = req.params;
+    console.log("Received Schedule DELETE Request for UUID: " + uuid);
+    try {
+        await deleteSchedule(uuid);
         res.json({ status: "ok", message: "" });
-    } else {
-        res.json({ status: "error", message: "Invalid schedule data." })
+    } catch (e) {
+        res.json({ status: "error", message: (e as Error).message})
     }
 })
 
