@@ -24,7 +24,7 @@ const accessInfo = async () => {
             throw new Error("Error while reading rule properties!");
         }
     } catch (e) {
-        console.log(e);
+        console.log("Error while fetching access info from firewall: " + e);
         throw new Error((e as Error).message);
     }
 }
@@ -38,13 +38,13 @@ const checkFirewallStatus = async () => {
             }
         });
         const json = await res.json();
-        if (json.System.status === "OK") {
-            return true;
+        if (json.System !== undefined) {
+            return json.System.status === "OK"
         } else {
-            throw new Error("Reading system status failed!")
+            throw new Error("Reading system status from firewall failed!")
         }
     } catch (e) {
-        console.log("Error fetching status: " + (e as Error).message);
+        console.log("Error fetching status: " + e);
         throw new Error((e as Error).message);
     }   
 }
@@ -91,7 +91,7 @@ const assembleStatusResponse = async (): Promise<StatusResponse> => {
         }
         return response;
     } catch (e) {
-        console.log(e)
+        console.log("Error while assembling status response: " + e)
         throw new Error((e as Error).message)
     }
 }

@@ -17,9 +17,10 @@ app.use("/", express.static(path.join(__dirname,"../../client/dist/")))
 app.get("/status", async (req, res) => {
     try {
         const response = await assembleStatusResponse();
-        res.json(response);
+        res.json({ status: "ok", content: response });
     } catch (e) {
-        res.json({ status: "error", message: (e as Error).message });
+        console.log("Error while sending status response to frontend: " + (e as Error).message)
+        res.json({ status: "error", content: (e as Error).message });
     }
     
 })
@@ -31,9 +32,9 @@ app.post("/status/:state", async (req, res) => {
     try {
         if (state !== "false" && state !== "true") throw new Error("Invalid request parameters received!");
         await accessToggle(state);
-        res.json({ status: "ok", message: "" });
+        res.json({ status: "ok", content: "" });
     } catch (e) {
-        res.json({ status: "error", message: (e as Error).message });
+        res.json({ status: "error", content: (e as Error).message });
     }
 })
 
@@ -43,12 +44,12 @@ app.post("/schedules", async (req, res) => {
     try {
         if (validateScheduleData(req.body)) {
             await putSchedule(req.body);
-            res.json({ status: "ok", message: "" });
+            res.json({ status: "ok", content: "" });
         } else {
             throw new Error("Invalid schedule data." );
         }
     } catch (e) {
-        res.json({ status: "error", message: (e as Error).message })
+        res.json({ status: "error", content: (e as Error).message })
     }
 })
 
@@ -59,9 +60,9 @@ app.post("/schedules/:uuid", async (req, res) => {
     console.log("Received Schedule DELETE Request for UUID: " + uuid);
     try {
         await deleteSchedule(uuid);
-        res.json({ status: "ok", message: "" });
+        res.json({ status: "ok", content: "" });
     } catch (e) {
-        res.json({ status: "error", message: (e as Error).message})
+        res.json({ status: "error", content: (e as Error).message})
     }
 })
 

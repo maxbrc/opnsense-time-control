@@ -13,3 +13,11 @@ export interface StatusResponse {
     };
     schedules: ruleSchedule[];
 }
+
+export type AlertType = "success" | "info" | "warning" | "error";
+
+export interface AppAlert {
+    type: AlertType;
+    text: string;
+    uuid: string;
+}

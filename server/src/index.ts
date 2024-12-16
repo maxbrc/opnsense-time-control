@@ -18,7 +18,7 @@ const { port: appPort } = new URL(process.env.APPLICATION_URL!);
         const initialStatus = await assembleStatusResponse();
         for (const schedule of initialStatus.schedules) {
             console.log("Creating inital schedule jobs:")
-            refreshScheduleJob(schedule.uuid)
+            await refreshScheduleJob(schedule.uuid)
         }
         console.log("Initial Data:");
         console.dir(initialStatus);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -6,9 +6,10 @@ import FormControl from '@mui/material/FormControl';
 import Button from '@mui/material/Button';
 import SettingsIcon from '@mui/icons-material/Settings';
 import "../styles/Selector.css";
+import { AlertType} from "../types";
 
-function Selector({ accessStatus, onStateChange }: { accessStatus: boolean, onStateChange: () => void }) {
-    
+function Selector({ accessStatus, onStateChange, doAlert }: { accessStatus: boolean, onStateChange: () => void, doAlert: (alertType: AlertType, alertText: string) => void}) {
+    // I should probably move this state up as well, but App is already cluttered
     const setAccessState = async (state: string) => {
         if (accessStatus.toString() !== state) {
             try {
@@ -17,10 +18,13 @@ function Selector({ accessStatus, onStateChange }: { accessStatus: boolean, onSt
                     headers: { Accept: "application/json" }
                 })
                 //const json = await res.json() // TO BE HANDLED
+                doAlert("success", `Internet Access was successfully turned ${state === "true" ? "on" : "off"}.`)
                 onStateChange()
             } catch (e) {
                 console.log("Error while setting access!", (e as Error).message)
             }
+        } else {
+            doAlert("info", `Access is already ${state === "true" ? "on" : "off"}.`)
         }
     }
 
@@ -29,6 +33,10 @@ function Selector({ accessStatus, onStateChange }: { accessStatus: boolean, onSt
         setAccess(event.target.value);
     }
     
+    useEffect(() => {
+        setAccess(accessStatus.toString());
+    }, [accessStatus]);
+
     return (
         <>
             <div>
