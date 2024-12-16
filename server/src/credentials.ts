@@ -3,8 +3,8 @@ import path from "path";
 import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url)); // ES6 Module __dirname workaround
 config({
-    path: path.join(__dirname,"../../.env"),
-    example: path.join(__dirname,"../../.env.example")
+    path: path.join(__dirname,"../../.env.server"),
+    example: path.join(__dirname,"../../.env.server.example")
 });
 config({
     path: path.join(__dirname,"../../.env.common"),

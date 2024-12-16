@@ -76,7 +76,7 @@ const refreshScheduleJob = async (uuid: string) => {
 const accessToggle = async (state: "true" | "false") => {
     try {
         if (accessEnabled && state === "false" || !accessEnabled && state === "true") {
-            const res = await fetch(`https://10.1.1.1/api/firewall/filter/toggleRule/${ruleUUID}/`, {
+            const res = await fetch(`${process.env.OPNSENSE_URL}api/firewall/filter/toggleRule/${ruleUUID}/`, {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
@@ -84,7 +84,7 @@ const accessToggle = async (state: "true" | "false") => {
                 },
             });
             const json = await res.json();
-            await fetch("https://10.1.1.1/api/firewall/filter/apply", {
+            await fetch(`${process.env.OPNSENSE_URL}api/firewall/filter/apply`, {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",

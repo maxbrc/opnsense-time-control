@@ -9,6 +9,7 @@ console.log("Connected to DB...");
 import app from "./routes.js";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+const { port: appPort } = new URL(process.env.APPLICATION_URL!);
 
 // === Initial Data Fetching === //
 
@@ -26,4 +27,4 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     }
 })()
 
-app.listen(process.env.PORT, () => console.log(`Listening on ${process.env.PORT}...`));
+app.listen(appPort, () => console.log(`Listening on ${appPort}...`));

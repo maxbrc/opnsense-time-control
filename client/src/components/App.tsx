@@ -37,7 +37,7 @@ function App() {
 
     const putSchedule = async (newSchedule: ruleSchedule) => {
         try {
-            const res = await fetch(`http://localhost:${process.env.PORT}/schedules`, {
+            const res = await fetch(`${process.env.APPLICATION_URL}schedules`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -53,7 +53,7 @@ function App() {
     const removeSchedule = (scheduleIndex: number): void => {
         const scheduleUUID = status.schedules[scheduleIndex].uuid;
         if (scheduleUUID) {
-            fetch(`http://localhost:${process.env.PORT}/schedules/${scheduleUUID}`, {
+            fetch(`${process.env.APPLICATION_URL}schedules/${scheduleUUID}`, {
                 method: "POST",
                 headers: {
                     Accept: "application/json"
@@ -70,7 +70,7 @@ function App() {
 
     async function fetchStatus() {
         try {
-            const res = await fetch(`http://localhost:${process.env.PORT}/status`, {
+            const res = await fetch(`${process.env.APPLICATION_URL}status`, {
                 headers: { "Accept": "application/json" }
             });
             const json = await res.json();

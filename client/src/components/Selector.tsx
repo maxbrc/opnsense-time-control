@@ -12,7 +12,7 @@ function Selector({ accessStatus, onStateChange }: { accessStatus: boolean, onSt
     const setAccessState = async (state: string) => {
         if (accessStatus.toString() !== state) {
             try {
-                const res = await fetch(`http://localhost:${process.env.PORT}/status/${state}`, {
+                const res = await fetch(`${process.env.APPLICATION_URL}status/${state}`, {
                     method: "POST",
                     headers: { Accept: "application/json" }
                 })

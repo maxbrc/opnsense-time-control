@@ -6,7 +6,7 @@ let accessEnabled: boolean;
 
 const accessInfo = async () => {
     try {
-        const res = await fetch(`https://10.1.1.1/api/firewall/filter/getRule/${ruleUUID}`, {
+        const res = await fetch(`${process.env.OPNSENSE_URL}api/firewall/filter/getRule/${ruleUUID}`, {
             headers: {
                 "Accept": "application/json",
                 "Authorization": "Basic " + credentials,
@@ -31,7 +31,7 @@ const accessInfo = async () => {
 
 const checkFirewallStatus = async () => {
     try {
-        const res = await fetch("https://10.1.1.1/api/core/system/status", {
+        const res = await fetch(`${process.env.OPNSENSE_URL}api/core/system/status`, {
             headers: {
                 "Accept": "application/json",
                 "Authorization": "Basic " + credentials,
