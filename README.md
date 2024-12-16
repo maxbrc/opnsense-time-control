@@ -1,5 +1,6 @@
 # Parental Time Controls for OPNsense
 This small application enables you control the internet access of all devices on your OPNsense firewall using it's API interface.
+![demo picture of the application](https://github.com/maxbrc/opnsense-time-control/blob/main/demo.png?raw=true)
 ## Features
 - Master internet switch
 - Unlimited schedules
