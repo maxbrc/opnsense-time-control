@@ -22,6 +22,7 @@ body:has(.loader) {
 
 main:has(.loader) {
 	width: auto;
+	border: 0 !important;
 }
 main {
 	width: 100%;
@@ -35,7 +36,7 @@ main {
 		min-height: 100%;
 	}
 	main {
-		width: 30em;
+		width: 25em;
 		border: 1px solid lightgrey;
 		border-radius: 0.5em;
 		padding: 1em;
