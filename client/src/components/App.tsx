@@ -24,11 +24,11 @@ function App() {
     }
 
     const [ status, setStatus ] = useState<StatusResponse>({} as StatusResponse);
-    const [ isLoading, setIsLoading ] = useState(true);
+    const [ isLoading, setIsLoading ] = useState<boolean>(true);
     const [ alerts, setAlerts ] = useState<AppAlert[]>([]);
 
     const doAlert = (alertType: AlertType, alertText: string): void => {
-        const newAlert = {
+        const newAlert: AppAlert = {
             type: alertType,
             text: alertText,
             uuid: uuid()
@@ -42,7 +42,7 @@ function App() {
     }
 
     const addSchedule = async (): Promise<void> => {
-        const newSchedule = {...blankSchedule, uuid: uuid()};
+        const newSchedule: ruleSchedule = {...blankSchedule, uuid: uuid()};
         setStatus(currStatus => {
             return {
                 ...currStatus,
@@ -93,30 +93,30 @@ function App() {
     }
 
     const removeSchedule = async (scheduleIndex: number): Promise<void> => {
-        const scheduleUUID = status.schedules[scheduleIndex].uuid;
+        const scheduleUUID: string = status.schedules[scheduleIndex].uuid;
         try {
-        const res = await fetch(`${process.env.APPLICATION_URL}schedules/${scheduleUUID}`, {
-            method: "POST",
-            headers: {
-                Accept: "application/json"
+            const res = await fetch(`${process.env.APPLICATION_URL}schedules/${scheduleUUID}`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json"
+                }
+            })
+            const json: BackendPostRes = await res.json();
+            if (json.status === "ok") {
+                doAlert("success", "Schedule was successfully removed.");
+            } else if (json.status === "error") {
+                doAlert("error", `Error in backend: ${json.content} - schedule could not be removed.`)
+            } else {
+                throw new Error("Unexpected response from backend!")
             }
-        })
-        const json: BackendPostRes = await res.json();
-        if (json.status === "ok") {
-            doAlert("success", "Schedule was successfully removed.");
-        } else if (json.status === "error") {
-            doAlert("error", `Error in backend: ${json.content} - schedule could not be removed.`)
-        } else {
-            throw new Error("Unexpected response from backend!")
+        } catch (e) {
+            console.log(e);
+            doAlert("error", `Fatal Error: ${(e as Error).message}`);
         }
-    } catch (e) {
-        console.log(e);
-        doAlert("error", `Fatal Error: ${(e as Error).message}`);
-    }
         setStatus(currStatus => {
             return {
                 ...currStatus,
-                schedules: currStatus.schedules.filter((el, index) => index !== scheduleIndex)
+                schedules: currStatus.schedules.filter((_, index) => index !== scheduleIndex)
             }
         })
     }

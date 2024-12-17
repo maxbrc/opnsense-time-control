@@ -7,9 +7,9 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import "../styles/Schedule.css";
 
 function Schedule({ dbSchedule, removeSchedule, putSchedule }: { dbSchedule: ruleSchedule, removeSchedule: () => void, putSchedule: (newSchedule: ruleSchedule) => void }) {
-    const [ schedule, setSchedule ] = useState(dbSchedule)
+    const [ schedule, setSchedule ] = useState<ruleSchedule>(dbSchedule)
 
-    const setScheduleTime = (time: string, value: string) => {
+    const setScheduleTime = (time: "start" | "end", value: string) => {
         setSchedule(currSchedule => {
             return {
                 ...currSchedule,

@@ -4,8 +4,8 @@ import Chip from "@mui/material/Chip";
 import WifiIcon from '@mui/icons-material/Wifi';
 import SecurityIcon from '@mui/icons-material/Security';
 
-function StatusBar({ text, propStatus, propStatusType }: { text: string, propStatus: boolean, propStatusType: string }) {
-    let label = "";
+function StatusBar({ text, propStatus, propStatusType }: { text: string, propStatus: boolean, propStatusType: "status" | "boolean" }) {
+    let label: string = "";
     if (propStatusType === "status") {
         label = propStatus ? "OK" : "Fault";
     } else if (propStatusType === "boolean") {

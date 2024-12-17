@@ -10,7 +10,7 @@ import { AlertType, BackendPostRes } from "../types";
 
 function Selector({ accessStatus, onStateChange, doAlert }: { accessStatus: boolean, onStateChange: () => void, doAlert: (alertType: AlertType, alertText: string) => void}) {
     // I should probably move this state up as well, but App is already cluttered
-    const setAccessState = async (state: string) => {
+    const setAccessState = async (state: "true" | "false"): Promise<void> => {
         if (accessStatus.toString() !== state) {
             try {
                 const res = await fetch(`${process.env.APPLICATION_URL}status/${state}`, {
@@ -28,13 +28,14 @@ function Selector({ accessStatus, onStateChange, doAlert }: { accessStatus: bool
                 onStateChange()
             } catch (e) {
                 console.log("Error while setting access:", e)
+                doAlert("error", `Fatal Error: ${(e as Error).message}`)
             }
         } else {
             doAlert("info", `Access is already ${state === "true" ? "on" : "off"}.`)
         }
     }
 
-    const [ access, setAccess ] = useState(accessStatus.toString());
+    const [ access, setAccess ] = useState<string>(accessStatus.toString());
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAccess(event.target.value);
     }
@@ -59,7 +60,7 @@ function Selector({ accessStatus, onStateChange, doAlert }: { accessStatus: bool
                 </FormControl>
             </div>
             <div className="buttonWrapper">
-                <Button onClick={() => {setAccessState(access);}} variant="outlined" startIcon={<SettingsIcon />} sx={{color: "black", borderColor: "black"}}>Set Access</Button>
+                <Button onClick={() => {setAccessState(access as "true" | "false");}} variant="outlined" startIcon={<SettingsIcon />} sx={{color: "black", borderColor: "black"}}>Set Access</Button>
             </div>
         </>
     )
