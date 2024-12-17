@@ -6,13 +6,12 @@ import "../styles/App.css";
 import StatusBar from "./StatusBar";
 import Selector from "./Selector";
 import Schedules from "./Schedules";
-import { StatusResponse, ruleSchedule, AppAlert, AlertType } from "../types";
+import { StatusResponse, ruleSchedule, AppAlert, AlertType, BackendPostRes } from "../types";
 
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import Alert from '@mui/material/Alert';
-import CheckIcon from '@mui/icons-material/Check';
 
 function App() {
     const [ initialDataFetched, setInitialDataFetched ] = useState(false); // will be improved at some point
@@ -42,7 +41,7 @@ function App() {
         }, 5000)
     }
 
-    const addSchedule = async () => {
+    const addSchedule = async (): Promise<void> => {
         const newSchedule = {...blankSchedule, uuid: uuid()};
         setStatus(currStatus => {
             return {
@@ -53,7 +52,7 @@ function App() {
         await putSchedule(newSchedule);
     }
 
-    const putSchedule = async (newSchedule: ruleSchedule) => {
+    const putSchedule = async (newSchedule: ruleSchedule): Promise<void> => {
         setStatus(currStatus => {
             return {
                 ...currStatus,
@@ -72,29 +71,48 @@ function App() {
                     },
                     body: JSON.stringify(newSchedule)
                 });
-                //const json = await res.json(); // TO BE HANDLED
-                if (status.schedules.find(schedule => schedule.uuid === newSchedule.uuid) === undefined) {
-                    doAlert("success", "Schedule was created successfully.");
+                const json: BackendPostRes = await res.json();
+                if (json.status === "ok") {
+                    if (status.schedules.find(schedule => schedule.uuid === newSchedule.uuid) === undefined) {
+                        doAlert("success", "Schedule was created successfully.");
+                    } else {
+                        doAlert("success", "Schedule was applied successfully.");
+                    }
+                } else if (json.status === "error") {
+                    doAlert("error", `Error in backend: ${json.content} - schedule could not be applied.`);
                 } else {
-                    doAlert("success", "Schedule was applied successfully.");
+                    throw new Error("Unexpected response from backend!");
                 }
             } catch (e) {
-                console.log((e as Error).message)
+                console.log(e);
+                doAlert("error", `Fatal Error: ${(e as Error).message}`);
             }
         } else {
             doAlert("info", "Nothing changed.");
         }
     }
 
-    const removeSchedule = (scheduleIndex: number): void => {
+    const removeSchedule = async (scheduleIndex: number): Promise<void> => {
         const scheduleUUID = status.schedules[scheduleIndex].uuid;
-        fetch(`${process.env.APPLICATION_URL}schedules/${scheduleUUID}`, {
+        try {
+        const res = await fetch(`${process.env.APPLICATION_URL}schedules/${scheduleUUID}`, {
             method: "POST",
             headers: {
                 Accept: "application/json"
             }
         })
-        doAlert("success", "Schedule was successfully removed.");
+        const json: BackendPostRes = await res.json();
+        if (json.status === "ok") {
+            doAlert("success", "Schedule was successfully removed.");
+        } else if (json.status === "error") {
+            doAlert("error", `Error in backend: ${json.content} - schedule could not be removed.`)
+        } else {
+            throw new Error("Unexpected response from backend!")
+        }
+    } catch (e) {
+        console.log(e);
+        doAlert("error", `Fatal Error: ${(e as Error).message}`);
+    }
         setStatus(currStatus => {
             return {
                 ...currStatus,
@@ -103,21 +121,21 @@ function App() {
         })
     }
 
-    async function fetchStatus() {
+    const fetchStatus = async (): Promise<void> => {
         try {
             const res = await fetch(`${process.env.APPLICATION_URL}status`, {
                 headers: { "Accept": "application/json" }
             });
-            const json = await res.json();
+            const json: BackendPostRes = await res.json();
             if (typeof json !== undefined) {
-                if (json.status === "ok") setStatus(json.content);
-                else if (json.status === "error") throw new Error("Error on backend: " + json.content);
+                if (json.status === "ok" && typeof json.content !== "string") setStatus(json.content);
+                else if (json.status === "error") doAlert("error", `Error in backend: ${json.content} - could not fetch status.`);
             } else {
                 throw new Error("Fetching status failed!");
             }
             setIsLoading(false);
         } catch (e) {
-            console.log((e as Error).message);
+            console.log(e);
             doAlert("error", (e as Error).message);
         }
     }
@@ -125,7 +143,7 @@ function App() {
     if (!initialDataFetched) {
         fetchStatus();
         setInitialDataFetched(true)
-    } // f*** useEffect, it gets called twice (and I know why) and I don't want to deal with it
+    } // f*** useEffect, it gets called twice (and I know why), but I don't want to deal with it
 
     if (isLoading) {
         return (

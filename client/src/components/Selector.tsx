@@ -6,7 +6,7 @@ import FormControl from '@mui/material/FormControl';
 import Button from '@mui/material/Button';
 import SettingsIcon from '@mui/icons-material/Settings';
 import "../styles/Selector.css";
-import { AlertType} from "../types";
+import { AlertType, BackendPostRes } from "../types";
 
 function Selector({ accessStatus, onStateChange, doAlert }: { accessStatus: boolean, onStateChange: () => void, doAlert: (alertType: AlertType, alertText: string) => void}) {
     // I should probably move this state up as well, but App is already cluttered
@@ -17,11 +17,17 @@ function Selector({ accessStatus, onStateChange, doAlert }: { accessStatus: bool
                     method: "POST",
                     headers: { Accept: "application/json" }
                 })
-                //const json = await res.json() // TO BE HANDLED
-                doAlert("success", `Internet Access was successfully turned ${state === "true" ? "on" : "off"}.`)
+                const json: BackendPostRes = await res.json();
+                if (json.status === "ok") {
+                    doAlert("success", `Internet Access was successfully turned ${state === "true" ? "on" : "off"}.`)
+                } else if (json.status === "error") {
+                    doAlert("error", `Error in backend: ${json.content} - access could not be set.`);
+                } else {
+                    throw new Error("Unexpected response from backend!")
+                }
                 onStateChange()
             } catch (e) {
-                console.log("Error while setting access!", (e as Error).message)
+                console.log("Error while setting access:", e)
             }
         } else {
             doAlert("info", `Access is already ${state === "true" ? "on" : "off"}.`)

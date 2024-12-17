@@ -66,10 +66,10 @@ const assembleStatusResponse = async (): Promise<StatusResponse> => {
         schedules: []
     }
     try {
-        const firewallStatus = await checkFirewallStatus();
+        const firewallStatus = true//await checkFirewallStatus();
         response.status.firewall = firewallStatus;
 
-        const accessStatus = await accessInfo();
+        const accessStatus = true//await accessInfo();
         response.status.access = accessStatus;
 
         const emptySchedule: ruleSchedule = {

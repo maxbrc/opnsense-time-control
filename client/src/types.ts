@@ -21,3 +21,8 @@ export interface AppAlert {
     text: string;
     uuid: string;
 }
+
+export interface BackendPostRes {
+    status: "ok" | "error";
+    content: string | StatusResponse;
+}
