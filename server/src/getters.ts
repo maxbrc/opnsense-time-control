@@ -45,7 +45,8 @@ const checkFirewallStatus = async () => {
         }
     } catch (e) {
         console.log("Error fetching status: " + e);
-        throw new Error((e as Error).message);
+        console.log("Probably the firewall is not reachable or the credentials are wrong.")
+        throw new Error(`${(e as Error).message} - Probably the firewall is not reachable or the credentials are wrong.`);
     }   
 }
 
@@ -66,10 +67,10 @@ const assembleStatusResponse = async (): Promise<StatusResponse> => {
         schedules: []
     }
     try {
-        const firewallStatus = true//await checkFirewallStatus();
+        const firewallStatus = await checkFirewallStatus();
         response.status.firewall = firewallStatus;
 
-        const accessStatus = true//await accessInfo();
+        const accessStatus = await accessInfo();
         response.status.access = accessStatus;
 
         const emptySchedule: ruleSchedule = {

@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 
 import { validateScheduleData } from "./utils.js";
 import { assembleStatusResponse } from "./getters.js";
-import { accessToggle, putSchedule, deleteSchedule } from "./setters.js";
+import { accessToggle, putSchedule, deleteSchedule, refreshScheduleJob } from "./setters.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url)); // ES6 Module __dirname workaround
 
@@ -19,7 +19,7 @@ app.get("/status", async (req, res) => {
         const response = await assembleStatusResponse();
         res.json({ status: "ok", content: response });
     } catch (e) {
-        console.log("Error while sending status response to frontend: " + (e as Error).message)
+        console.log("Error while sending status response to frontend: " + e)
         res.json({ status: "error", content: (e as Error).message });
     }
     
@@ -28,12 +28,14 @@ app.get("/status", async (req, res) => {
 // === POST Routes === //
 
 app.post("/status/:state", async (req, res) => {
-    const { state } = req.params;
+    const { state }: { state: string } = req.params;
+    console.log("Received internet access state change: " + state);
     try {
         if (state !== "false" && state !== "true") throw new Error("Invalid request parameters received!");
         await accessToggle(state);
         res.json({ status: "ok", content: "" });
     } catch (e) {
+        console.log(e)
         res.json({ status: "error", content: (e as Error).message });
     }
 })
@@ -49,6 +51,7 @@ app.post("/schedules", async (req, res) => {
             throw new Error("Invalid schedule data." );
         }
     } catch (e) {
+        console.log(e);
         res.json({ status: "error", content: (e as Error).message })
     }
 })
@@ -56,12 +59,14 @@ app.post("/schedules", async (req, res) => {
 // === (DELETE) Routes === //
 
 app.post("/schedules/:uuid", async (req, res) => {
-    const { uuid } = req.params;
+    const { uuid }: { uuid: string } = req.params;
     console.log("Received Schedule DELETE Request for UUID: " + uuid);
     try {
+        await refreshScheduleJob(uuid, true);
         await deleteSchedule(uuid);
         res.json({ status: "ok", content: "" });
     } catch (e) {
+        console.log(e);
         res.json({ status: "error", content: (e as Error).message})
     }
 })

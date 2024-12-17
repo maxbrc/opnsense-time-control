@@ -38,7 +38,7 @@ function App() {
             setAlerts(currAlerts => {
                 return currAlerts.filter(el => el.uuid !== newAlert.uuid)
             })
-        }, 5000)
+        }, alertType === "error" ? 8000 : 5000)
     }
 
     const addSchedule = async (): Promise<void> => {
@@ -53,16 +53,13 @@ function App() {
     }
 
     const putSchedule = async (newSchedule: ruleSchedule): Promise<void> => {
-        setStatus(currStatus => {
-            return {
-                ...currStatus,
-                schedules: [
-                    ...currStatus.schedules.filter(el => el.uuid !== newSchedule.uuid),
-                    newSchedule
-                ]
-            }
-        });
-        if (status.schedules.find(schedule => schedule.uuid === newSchedule.uuid) !== newSchedule) {
+        if (JSON.stringify(status.schedules.find(schedule => schedule.uuid === newSchedule.uuid)) !== JSON.stringify(newSchedule)) {
+            setStatus(currStatus => {
+                return {
+                    ...currStatus,
+                    schedules: currStatus.schedules.map(el => el.uuid !== newSchedule.uuid ? el : newSchedule)
+                }
+            });
             try {
                 const res = await fetch(`${process.env.APPLICATION_URL}schedules`, {
                     method: "POST",
@@ -79,7 +76,7 @@ function App() {
                         doAlert("success", "Schedule was applied successfully.");
                     }
                 } else if (json.status === "error") {
-                    doAlert("error", `Error in backend: ${json.content} - schedule could not be applied.`);
+                    doAlert("error", `Error in backend: schedule could not be applied: ${json.content}.`);
                 } else {
                     throw new Error("Unexpected response from backend!");
                 }
@@ -105,7 +102,7 @@ function App() {
             if (json.status === "ok") {
                 doAlert("success", "Schedule was successfully removed.");
             } else if (json.status === "error") {
-                doAlert("error", `Error in backend: ${json.content} - schedule could not be removed.`)
+                doAlert("error", `Error in backend: schedule could not be removed: ${json.content}`)
             } else {
                 throw new Error("Unexpected response from backend!")
             }
@@ -127,13 +124,11 @@ function App() {
                 headers: { "Accept": "application/json" }
             });
             const json: BackendPostRes = await res.json();
-            if (typeof json !== undefined) {
-                if (json.status === "ok" && typeof json.content !== "string") setStatus(json.content);
-                else if (json.status === "error") doAlert("error", `Error in backend: ${json.content} - could not fetch status.`);
-            } else {
-                throw new Error("Fetching status failed!");
+            if (json.status === "ok" && typeof json.content !== "string") {
+                setStatus(json.content);
+                setIsLoading(false);
             }
-            setIsLoading(false);
+            else if (json.status === "error") doAlert("error", `Error in backend: could not fetch status: ${json.content}`);
         } catch (e) {
             console.log(e);
             doAlert("error", (e as Error).message);
@@ -170,7 +165,7 @@ function App() {
                 {
                     alerts.map(el => {
                         return (
-                            <Alert severity={el.type} variant="filled" key={el.uuid} sx={{"z-index": "9999"}}>
+                            <Alert severity={el.type} variant="filled" key={el.uuid}>
                                 {el.text}
                             </Alert>
                         )

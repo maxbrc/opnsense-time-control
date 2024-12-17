@@ -11,7 +11,7 @@ const extractScheduleTime = (value: string, unit: "hour" | "minute"): string => 
 }
 
 const assembleScheduleTime = (hour: number, minute: number): string => {
-    let timeString = "";
+    let timeString: string = "";
     if (hour.toString().length === 1) {
         timeString += `0${hour}`;
     } else {

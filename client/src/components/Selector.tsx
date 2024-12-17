@@ -8,36 +8,37 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import "../styles/Selector.css";
 import { AlertType, BackendPostRes } from "../types";
 
-function Selector({ accessStatus, onStateChange, doAlert }: { accessStatus: boolean, onStateChange: () => void, doAlert: (alertType: AlertType, alertText: string) => void}) {
+function Selector({ accessStatus, onStateChange, doAlert }: { accessStatus: boolean, onStateChange: () => Promise<void>, doAlert: (alertType: AlertType, alertText: string) => void}) {
     // I should probably move this state up as well, but App is already cluttered
     const setAccessState = async (state: "true" | "false"): Promise<void> => {
-        if (accessStatus.toString() !== state) {
             try {
-                const res = await fetch(`${process.env.APPLICATION_URL}status/${state}`, {
-                    method: "POST",
-                    headers: { Accept: "application/json" }
-                })
-                const json: BackendPostRes = await res.json();
-                if (json.status === "ok") {
-                    doAlert("success", `Internet Access was successfully turned ${state === "true" ? "on" : "off"}.`)
-                } else if (json.status === "error") {
-                    doAlert("error", `Error in backend: ${json.content} - access could not be set.`);
+                if (accessStatus.toString() !== state) {
+                    const res = await fetch(`${process.env.APPLICATION_URL}status/${state}`, {
+                        method: "POST",
+                        headers: { Accept: "application/json" }
+                    })
+                    const json: BackendPostRes = await res.json();
+                    if (json.status === "ok") {
+                        doAlert("success", `Internet access was successfully turned ${state === "true" ? "on" : "off"}.`)
+                    } else if (json.status === "error") {
+                        doAlert("error", `Error in backend: access could not be set: ${json.content}`);
+                    } else {
+                        throw new Error("Unexpected response from backend!")
+                    }
+                    await onStateChange()
                 } else {
-                    throw new Error("Unexpected response from backend!")
+                    doAlert("info", `Access is already ${state === "true" ? "on" : "off"}.`)
                 }
-                onStateChange()
             } catch (e) {
                 console.log("Error while setting access:", e)
                 doAlert("error", `Fatal Error: ${(e as Error).message}`)
             }
-        } else {
-            doAlert("info", `Access is already ${state === "true" ? "on" : "off"}.`)
         }
-    }
 
     const [ access, setAccess ] = useState<string>(accessStatus.toString());
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAccess(event.target.value);
+        onStateChange(); // This may be improved, I wanted to put it in setAccessState but somehow it doesn't get awaited properly, no matter what I try
     }
     
     useEffect(() => {

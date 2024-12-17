@@ -17,25 +17,25 @@ interface Time {
 
 const scheduleJobs: {[key: string]: ScheduleJobs} = {};
 
-const scheduleJob = (uuid: string, start: Time, end: Time) => {
+const scheduleJob = (uuid: string, start: Time, end: Time): void => {
     scheduleJobs[uuid] = {} as ScheduleJobs;
-    const startJob = schedule.scheduleJob({tz: "Europe/Berlin", hour: start.hour, minute: start.minute, second: 0}, async () => {
+    const startJob = schedule.scheduleJob({tz: "Europe/Berlin", hour: start.hour, minute: start.minute, second: 0}, async (): Promise<void> => {
         console.log("Start time is there!");
         try {
             await accessToggle("false")
             console.log("Access was turned off successfully...");
         } catch (e) {
-            console.log("Failed to turn off access: " + (e as Error).message);
+            console.log("Failed to turn off access: " + e);
         }
         
     })
-    const endJob = schedule.scheduleJob({tz: "Europe/Berlin", hour: end.hour, minute: end.minute, second: 0}, async () => {
+    const endJob = schedule.scheduleJob({tz: "Europe/Berlin", hour: end.hour, minute: end.minute, second: 0}, async (): Promise<void> => {
         console.log("End time is there!");
         try {
             await accessToggle("true");
             console.log("Access was turned on successfully...");
         } catch (e) {
-            console.log("Failed to turn on access: " + (e as Error).message);
+            console.log("Failed to turn on access: " + e);
         }
     })
     scheduleJobs[uuid].startJob = startJob;
@@ -43,7 +43,7 @@ const scheduleJob = (uuid: string, start: Time, end: Time) => {
     console.log("Successfully created jobs for uuid: " + uuid);
 }
 
-const refreshScheduleJob = async (uuid: string) => {
+const refreshScheduleJob = async (uuid: string, remove: boolean): Promise<void> => {
     console.log("Refreshing schedule jobs for uuid: " + uuid);
     try {
         const [ schedule ] = await Schedule.find({ uuid: uuid });
@@ -52,7 +52,7 @@ const refreshScheduleJob = async (uuid: string) => {
             scheduleJobs[uuid].endJob.cancel();
             console.log("Canceled existing jobs.");
         }
-        if (schedule.enabled) {
+        if (schedule.enabled && !remove) {
             console.log("Creating new jobs...")
             scheduleJob(
                 uuid,
@@ -73,9 +73,9 @@ const refreshScheduleJob = async (uuid: string) => {
     }
 }
 
-const accessToggle = async (state: "true" | "false") => {
+const accessToggle = async (state: "true" | "false"): Promise<void> => {
     try {
-        if (accessEnabled && state === "false" || !accessEnabled && state === "true") {
+        if (accessEnabled.toString() !== state) {
             const res = await fetch(`${process.env.OPNSENSE_URL}api/firewall/filter/toggleRule/${ruleUUID}/`, {
                 method: "POST",
                 headers: {
@@ -91,11 +91,11 @@ const accessToggle = async (state: "true" | "false") => {
                     "Authorization": "Basic " + credentials,
                 }
             })
-            const { result } = json;
+            const { result }: { result: "Enabled" | "Disabled" } = json;
             if (result !== "Enabled" && result !== "Disabled") throw new Error("Unexpected response from firewall!");
-            accessInfo();
+            await accessInfo();
         } else {
-            throw new Error("State already set!");
+            throw new Error("State already set!"); // This is not directly an error. I will be fixing that.
         }
     } catch (e) {
         console.log(e);
@@ -112,7 +112,7 @@ const putSchedule = async (requestBody: ruleSchedule) => {
     newSchedule.end.minute = extractScheduleTime(end, "minute");
     try {
         await Schedule.updateOne({ uuid: newSchedule.uuid }, newSchedule, { upsert: true });
-        await refreshScheduleJob(newSchedule.uuid);
+        await refreshScheduleJob(newSchedule.uuid, false);
     } catch (e) {
         console.log(e);
         throw new Error((e as Error).message);

@@ -20,4 +20,4 @@ export interface ruleScheduleModel {
     name: string;
     dow: Number[];
 }
-// I do not yet know how I can connect this to the Mongo Schema (ignore in)
+// I do not yet know how I can connect this to the Mongo Schema (ignore in compiled version)

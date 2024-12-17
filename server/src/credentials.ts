@@ -10,7 +10,8 @@ config({
     path: path.join(__dirname,"../../.env.common"),
     example: path.join(__dirname,"../../.env.common.example")
 });
+if (!(process.env.KEY && process.env.SECRET && process.env.RULE_UUID && process.env.OPNSENSE_URL && process.env.MONGODB_URI)) throw new Error(".env.server faulty")
 const credentials = Buffer.from(process.env.KEY + ":" + process.env.SECRET).toString("base64");
-const ruleUUID = process.env.RULEUUID;
+const ruleUUID = process.env.RULE_UUID;
 
 export { credentials, ruleUUID };
