@@ -9,7 +9,13 @@ console.log("Connected to DB...");
 import app from "./routes.js";
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-const { port: appPort } = new URL(process.env.APPLICATION_URL!);
+let appPort: number;
+const appURL = new URL(process.env.APPLICATION_URL!);
+if (appURL.port === "") {
+    if (appURL.protocol === "https:") appPort = 443;
+    else if (appURL.protocol === "http:") appPort = 80;
+    else throw new Error("Check APPLICATION_URL environment variable!")
+} else appPort = parseInt(appURL.port);
 
 // === Initial Data Fetching === //
 

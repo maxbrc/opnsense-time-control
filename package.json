@@ -1,7 +1,7 @@
 {
   "name": "opnsense-time-control",
   "version": "1.0.0",
-  "main": "server/index.js",
+  "main": "server/dist/index.js",
   "scripts": {
     "dev": "webpack --watch --config webpack.dev.js & tsc-watch -p server/tsconfig.json --onSuccess \"node server/dist/index.js\"",
     "build": "webpack --config webpack.prod.js && tsc -p server/tsconfig.json"
