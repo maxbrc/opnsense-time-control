@@ -61,7 +61,7 @@ function App() {
                 }
             });
             try {
-                const res = await fetch(`${window.location.origin}schedules`, {
+                const res = await fetch(`${window.location.origin}/schedules`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -92,7 +92,7 @@ function App() {
     const removeSchedule = async (scheduleIndex: number): Promise<void> => {
         const scheduleUUID: string = status.schedules[scheduleIndex].uuid;
         try {
-            const res = await fetch(`${window.location.origin}schedules/${scheduleUUID}`, {
+            const res = await fetch(`${window.location.origin}/schedules/${scheduleUUID}`, {
                 method: "POST",
                 headers: {
                     Accept: "application/json"
@@ -120,7 +120,7 @@ function App() {
 
     const fetchStatus = async (): Promise<void> => {
         try {
-            const res = await fetch(`${window.location.origin}status`, {
+            const res = await fetch(`${window.location.origin}/status`, {
                 headers: { "Accept": "application/json" }
             });
             const json: BackendPostRes = await res.json();

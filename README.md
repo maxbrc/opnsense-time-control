@@ -69,8 +69,8 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
   - Make sure to adjust the path of the Node executable and the location of the release files (must end in server/dist/index.js).
-3. Move .env.server.example and .env.common.example to .env and .env.common. For UNIX-based systems (e.g. Ubuntu): `cp .env.server.example .env.server && cp .env.common.example .env.common`
-4. Enter you API credentials, the rule's UUID and your firewall's URL in the `.env.server` file. Change the application URL in `.env.common`. If your MongoDB instance is not installed with default settings, you may also alter the URI in `.env.server`.
+3. Move `.env.example` to `.env`. For UNIX-based systems (e.g. Ubuntu): `cp .env.example .env`
+4. Enter you API credentials, the rule's UUID and your firewall's URL in the `.env` file. If your MongoDB instance is not installed with default settings, you may also alter the URI in `.env`. You can also change the port there.
 5. `systemctl daemon-reload && systemctl enable opnsense-time-control && systemctl start opnsense-time-control`
 6. Check the service log files, by doing `service opnsense-time-control status`. If no errors appear and the service is running, you're finished!
 7. Point a reverse proxy like nginx or Traefik to `http://<address>:3000/` (by default)

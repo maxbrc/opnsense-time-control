@@ -13,7 +13,7 @@ function Selector({ accessStatus, onStateChange, doAlert }: { accessStatus: bool
     const setAccessState = async (state: "true" | "false"): Promise<void> => {
             try {
                 if (accessStatus.toString() !== state) {
-                    const res = await fetch(`${window.location.origin}status/${state}`, {
+                    const res = await fetch(`${window.location.origin}/status/${state}`, {
                         method: "POST",
                         headers: { Accept: "application/json" }
                     })
