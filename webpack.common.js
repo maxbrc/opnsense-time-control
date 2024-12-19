@@ -6,9 +6,6 @@ const config = {
     plugins: [
         new HtmlWebpackPlugin({
             template: "./client/src/index.html"
-        }),
-        new DotenvWebpackPlugin({
-            path: "./.env.common"
         })
     ],
     module: {
